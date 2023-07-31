@@ -4,15 +4,15 @@
 
 struct RecordType
 {
-	int		id;
-	char	name;
-	int		order; 
+	int id;
+	char name;
+	int order; 
 };
 
 struct HashType
 {
-    struct RecordType* data;
-    int size;
+	struct RecordType* data;
+	int size;
 };
 
 // Compute the hash function
@@ -60,15 +60,15 @@ int parseData(char* inputFileName, struct RecordType** ppData)
 
 void insertRecord(struct HashType* pHashArray, struct RecordType record)
 {
-    int index = hash(record.id, pHashArray -> size);
+	int index = hash(record.id, pHashArray -> size);
 
-    while (pHashArray -> data[index].id != -1)
-    {
-        index = (index + 1) % pHashArray -> size;
-    }
+	while (pHashArray -> data[index].id != -1)
+	{
+		index = (index + 1) % pHashArray -> size;
+	}
 
-    // Insert the record into the hash table
-    pHashArray -> data[index] = record;
+	// Insert the record into the hash table
+	pHashArray -> data[index] = record;
 }
 
 
@@ -108,30 +108,30 @@ int main(void)
 	printRecords(pRecords, recordSz);
 
 	// Your hash implementation
-    int hashSz = recordSz * 2;
-    struct HashType *hashArray = malloc(sizeof(struct HashType));
-    
+	int hashSz = recordSz * 2;
+	struct HashType *hashArray = malloc(sizeof(struct HashType));
+
 	hashArray -> data = malloc(sizeof(struct RecordType) * hashSz);
 
-    for (int i = 0; i < hashSz; ++i)
-    {
-        hashArray -> data[i].id = -1;
-        hashArray -> data[i].name = ' ';
-        hashArray -> data[i].order = -1;
-    }
+	for (int i = 0; i < hashSz; ++i)
+	{
+		hashArray -> data[i].id = -1;
+		hashArray -> data[i].name = ' ';
+		hashArray -> data[i].order = -1;
+	}
 
-    hashArray -> size = hashSz;
+	hashArray -> size = hashSz;
 
-    for (int i = 0; i < recordSz; ++i)
-    {
-        insertRecord(hashArray, pRecords[i]);
-    }
+	for (int i = 0; i < recordSz; ++i)
+	{
+		insertRecord(hashArray, pRecords[i]);
+	}
 
-    displayRecordsInHash(hashArray, hashSz);
+	displayRecordsInHash(hashArray, hashSz);
 
-    free(pRecords);
-    free(hashArray -> data);
-    free(hashArray);
+	free(pRecords);
+	free(hashArray -> data);
+	free(hashArray);
 
-    return 0;
+	return 0;
 }

@@ -12,7 +12,7 @@ struct RecordType
 struct HashType
 {
 	struct RecordType* data;
-	int size;
+	struct HashType* next;
 };
 
 // Compute the hash function
@@ -58,17 +58,31 @@ int parseData(char* inputFileName, struct RecordType** ppData)
 	return dataSz;
 }
 
-void insertRecord(struct HashType* pHashArray, struct RecordType record)
+void insertRecord(struct HashType** pHashArray, struct RecordType* record, int size)
 {
-	int index = hash(record.id, pHashArray -> size);
+	struct HashType* newNode = malloc(sizeof(struct HashType));
+    newNode -> data = record;
+    newNode -> next = NULL;
 
-	while (pHashArray -> data[index].id != -1)
-	{
-		index = (index + 1) % pHashArray -> size;
+    int hashKey = hash(record -> id, size);
+	// printf("has h key %d", record.id % size);
+
+    if(pHashArray[hashKey] == NULL) {
+        pHashArray[hashKey] = newNode;
 	}
+	else
+    {
+        // struct HashType *temp = pHashArray[hashKey];
+        // while(temp -> next != NULL)
+        // {
+        //     temp = temp -> next;
+        // }
 
-	// Insert the record into the hash table
-	pHashArray -> data[index] = record;
+        // temp -> next = newNode;
+
+		newNode->next = pHashArray[hashKey];
+        pHashArray[hashKey] = newNode;
+    }
 }
 
 
@@ -88,14 +102,16 @@ void printRecords(struct RecordType pData[], int dataSz)
 // skip the indices which are free
 // the output will be in the format:
 // index x -> id, name, order -> id, name, order ....
-void displayRecordsInHash(struct HashType *pHashArray, int hashSz)
+void displayRecordsInHash(struct HashType **pHashArray, int hashSz)
 {
-	int i;
-
-	for (i = 0; i < hashSz; ++i)
+	for (int i = 0; i < hashSz; ++i)
 	{
-		printf("Index %d -> %d, %c, %d\n", i, pHashArray -> data[i].id, pHashArray -> data[i].name, pHashArray -> data[i].order);
-		// if index is occupied with any records, print all
+		struct HashType* chain = pHashArray[i];
+        while (chain != NULL)
+		{
+			printf("Index %d -> %d, %c, %d\n", i, chain -> data -> id, chain -> data -> name, chain -> data -> order);
+			chain = chain -> next;
+		}
 	}
 }
 
@@ -109,27 +125,31 @@ int main(void)
 
 	// Your hash implementation
 	int hashSz = recordSz * 2;
-	struct HashType *hashArray = malloc(sizeof(struct HashType));
+	struct HashType **hashArray = malloc(sizeof(struct HashType) * hashSz);
 
-	hashArray -> data = malloc(sizeof(struct RecordType) * hashSz);
-	hashArray -> size = hashSz;
-
-	for (int i = 0; i < hashSz; ++i)
-	{
-		hashArray -> data[i].id = -1;
-		hashArray -> data[i].name = ' ';
-		hashArray -> data[i].order = -1;
-	}
+	for (int i = 0; i < hashSz; i++)
+    {
+        hashArray[i] = NULL;
+    }
 
 	for (int i = 0; i < recordSz; ++i)
 	{
-		insertRecord(hashArray, pRecords[i]);
+		insertRecord(hashArray, &pRecords[i], hashSz);
 	}
 
 	displayRecordsInHash(hashArray, hashSz);
 
 	free(pRecords);
-	free(hashArray -> data);
+	for (int i = 0; i < hashSz; i++)
+    {
+        struct HashType* temp = hashArray[i];
+        while (temp != NULL)
+        {
+            struct HashType* next = temp->next;
+            free(temp);
+            temp = next;
+        }
+    }
 	free(hashArray);
 
 	return 0;

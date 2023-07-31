@@ -65,7 +65,6 @@ void insertRecord(struct HashType** pHashArray, struct RecordType* record, int s
     newNode -> next = NULL;
 
     int hashKey = hash(record -> id, size);
-	// printf("has h key %d", record.id % size);
 
     if(pHashArray[hashKey] == NULL) {
         pHashArray[hashKey] = newNode;

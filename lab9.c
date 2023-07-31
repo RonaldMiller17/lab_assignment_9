@@ -72,16 +72,13 @@ void insertRecord(struct HashType** pHashArray, struct RecordType* record, int s
 	}
 	else
     {
-        // struct HashType *temp = pHashArray[hashKey];
-        // while(temp -> next != NULL)
-        // {
-        //     temp = temp -> next;
-        // }
+        struct HashType *temp = pHashArray[hashKey];
+        while(temp -> next != NULL)
+        {
+            temp = temp -> next;
+        }
 
-        // temp -> next = newNode;
-
-		newNode->next = pHashArray[hashKey];
-        pHashArray[hashKey] = newNode;
+        temp -> next = newNode;
     }
 }
 

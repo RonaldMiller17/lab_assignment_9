@@ -112,6 +112,7 @@ int main(void)
 	struct HashType *hashArray = malloc(sizeof(struct HashType));
 
 	hashArray -> data = malloc(sizeof(struct RecordType) * hashSz);
+	hashArray -> size = hashSz;
 
 	for (int i = 0; i < hashSz; ++i)
 	{
@@ -119,8 +120,6 @@ int main(void)
 		hashArray -> data[i].name = ' ';
 		hashArray -> data[i].order = -1;
 	}
-
-	hashArray -> size = hashSz;
 
 	for (int i = 0; i < recordSz; ++i)
 	{
